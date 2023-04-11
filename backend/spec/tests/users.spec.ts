@@ -34,14 +34,14 @@ const {
 
 // Dummy users for GET req
 const DummyGetAllUsers = [
-  new User('Sean Maxwell', 'sean.maxwell@gmail.com'),
-  new User('John Smith', 'john.smith@gmail.com'),
-  new User('Gordan Freeman', 'gordan.freeman@gmail.com'),
+  User.new('Sean Maxwell', 'sean.maxwell@gmail.com'),
+  User.new('John Smith', 'john.smith@gmail.com'),
+  User.new('Gordan Freeman', 'gordan.freeman@gmail.com'),
 ] as const;
 
 // Dummy update user
 const DummyUserData = {
-  user: new User('Gordan Freeman', 'gordan.freeman@gmail.com'),
+  user: User.new('Gordan Freeman', 'gordan.freeman@gmail.com'),
 } as const;
 
 
@@ -79,7 +79,7 @@ describe('UserRouter', () => {
         .end((_: Error, res: Response) => {
           expect(res.status).toBe(OK);
           for (let i = 0; i < res.body.users.length; i++) {
-            const user = User.from(res.body.users[i]);
+            const user = res.body.users[i];
             expect(user).toEqual(DummyGetAllUsers[i]);
           }
           done();

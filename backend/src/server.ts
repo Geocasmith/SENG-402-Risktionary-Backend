@@ -1,6 +1,11 @@
 /**
  * Setup express server.
  */
+import { Server } from 'socket.io';
+import { createServer } from 'http';
+import { setupDrawingSocket } from './sockets/drawingSocket';
+import { setupChatSocket } from "./sockets/chatSocket";
+
 
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -24,9 +29,46 @@ import { RouteError } from '@src/other/classes';
 // **** Variables **** //
 
 const app = express();
+const http = require('http');
 
+//socket server
+// const httpServer = createServer(app);
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // You can replace '*' with your frontend app's URL for security
+    methods: ['GET', 'POST']
+  }
+});
+
+setupDrawingSocket(io);
+setupChatSocket(io);  
+
+const PORT =  3001;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
+const dbPool = require('./dbConnection');
+const cors = require('cors');
+
+
+// Example route to query the database
+app.get('/example', async (req, res) => {
+  try {
+    const query = 'SELECT * FROM your_table_name'; // Replace with a valid SQL query for your database
+    const results = await dbPool.query(query);
+    res.json(results);
+  } catch (error) {
+    console.error('Error executing query:', error.stack);
+    res.status(500).json({ error: 'An error occurred while processing the request.' });
+  }
+});
 
 // **** Setup **** //
+//setup cors
+app.use(cors());
 
 // Basic middleware
 app.use(express.json());
@@ -89,6 +131,7 @@ app.get('/users', (req: Request, res: Response) => {
     res.sendFile('users.html', {root: viewsDir});
   }
 });
+
 
 
 // **** Export default **** //

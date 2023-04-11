@@ -64,7 +64,7 @@ describe('AuthRouter', () => {
       // Setup data
       const role = UserRoles.Standard,
         pwdHash = PwdUtil.hashSync(LoginCreds.password),
-        loginUser = new User('john smith', LoginCreds.email, role, pwdHash);
+        loginUser = User.new('john smith', LoginCreds.email, role, pwdHash);
       // Add spy
       spyOn(UserRepo, 'getOne').and.resolveTo(loginUser);
       // Call API
@@ -99,7 +99,7 @@ describe('AuthRouter', () => {
       // Setup data
       const role = UserRoles.Standard,
         pwdHash = PwdUtil.hashSync('bad password'),
-        loginUser = new User('john smith', LoginCreds.email, role, pwdHash);
+        loginUser = User.new('john smith', LoginCreds.email, role, pwdHash);
       // Add spy
       spyOn(UserRepo, 'getOne').and.resolveTo(loginUser);
       // Call API

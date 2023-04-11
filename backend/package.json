@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "Backend",
   "version": "0.0.0",
   "scripts": {
     "build": "npx ts-node build.ts",
@@ -38,8 +38,10 @@
     "jet-validator": "^1.0.4",
     "jsonfile": "^6.1.0",
     "jsonwebtoken": "^9.0.0",
+    "mariadb": "^3.1.1",
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
+    "socket.io": "^4.6.1",
     "ts-command-line-args": "^2.4.2"
   },
   "devDependencies": {
@@ -52,19 +54,19 @@
     "@types/jsonfile": "^6.1.1",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/morgan": "^1.9.4",
-    "@types/node": "^18.15.5",
+    "@types/node": "^18.15.11",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "eslint": "^8.36.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.37.0",
     "eslint-plugin-node": "^11.1.0",
     "find": "^0.3.0",
     "fs-extra": "^11.1.1",
     "jasmine": "^4.6.0",
-    "nodemon": "^2.0.21",
+    "nodemon": "^2.0.22",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.1.2",
-    "typescript": "^5.0.2"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.0.3"
   }
 }

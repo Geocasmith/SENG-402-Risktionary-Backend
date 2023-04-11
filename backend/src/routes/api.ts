@@ -14,7 +14,7 @@ const apiRouter = Router(),
   validate = jetValidator();
 
 
-// **** Setup **** //
+// **** Setup AuthRouter **** //
 
 const authRouter = Router();
 

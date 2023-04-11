@@ -29,9 +29,16 @@ async function login(req: IReq<ILoginReq>, res: IRes) {
     name: user.name,
     role: user.role,
   });
+
+  // Generate token for session (without a secret key)
+  const token = Buffer.from(`${user.id}:${Date.now()}`).toString("base64");
+  //set the token in the db
+
   // Return
-  return res.status(HttpStatusCodes.OK).end();
+  // return the token with the ok status
+  return res.status(HttpStatusCodes.OK).json({ token });
 }
+
 
 /**
  * Logout the user.
