@@ -1,5 +1,5 @@
 const mariadb = require('mariadb');
-const dbConfig = require('./dbconfig');
+const dbConfig = require('./dbConfig');
 
 const pool = mariadb.createPool(dbConfig);
 
