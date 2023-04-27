@@ -4,7 +4,9 @@ import logger from 'jet-logger';
 import EnvVars from '@src/constants/EnvVars';
 import httpServer from './server';
 
-
+if (process.env.NODE_ENV === 'production') {
+  require('module-alias/register');
+}
 // **** Run **** //
 
 const SERVER_START_MSG = ('Express server started on port: ' + 
