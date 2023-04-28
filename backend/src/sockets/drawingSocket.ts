@@ -17,8 +17,8 @@ export const setupDrawingSocket = (io: Server) => {
         setTimeout(() => {
           console.log("Display votes emitted");
           io.emit("heatmap", votes);
-        }, 15 * 1000);
-      }, 10 * 1000);
+        }, 30 * 1000);
+      }, 2 * 1000);
     });
 
     socket.on("slidebutton", () => {
