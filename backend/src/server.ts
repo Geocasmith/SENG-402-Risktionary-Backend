@@ -6,7 +6,6 @@ import { createServer } from 'http';
 import { setupDrawingSocket } from './sockets/drawingSocket';
 import { setupChatSocket } from "./sockets/chatSocket";
 
-
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
@@ -25,15 +24,31 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 
+// Import required modules for HTTPS
+import fs from 'fs';
+import https from 'https';
+
+// Load SSL certificate and key
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/fullchain.pem', 'utf8');
+// If you have a CA Bundle, uncomment the following line and update the path
+// const ca = fs.readFileSync('path/to/ca_bundle.crt', 'utf8');
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  // Uncomment the following line if you have a CA Bundle
+  // ca: ca,
+};
 
 // **** Variables **** //
 
 const app = express();
-const http = require('http');
 
 //socket server
-// const httpServer = createServer(app);
-const server = http.createServer(app);
+const server = https.createServer(credentials, app); // Updated to use HTTPS
+// const server = http.createServer(app); old http for local
+
 const io = new Server(server, {
   cors: {
     origin: '*', // You can replace '*' with your frontend app's URL for security
@@ -42,12 +57,13 @@ const io = new Server(server, {
 });
 
 setupDrawingSocket(io);
-setupChatSocket(io);  
+setupChatSocket(io);
 
 const PORT =  3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
 
 
 const dbPool = require('./dbConnection');
