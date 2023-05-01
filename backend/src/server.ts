@@ -12,6 +12,7 @@ import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import { createHttpServer } from './httpServerConfig';
 
 import 'express-async-errors';
 
@@ -25,28 +26,30 @@ import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 
 // Import required modules for HTTPS
-import fs from 'fs';
-import https from 'https';
+// import fs from 'fs';
+// import https from 'https';
 
-// Load SSL certificate and key
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/fullchain.pem', 'utf8');
-// If you have a CA Bundle, uncomment the following line and update the path
-// const ca = fs.readFileSync('path/to/ca_bundle.crt', 'utf8');
+// // Load SSL certificate and key
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/csse-risk1.canterbury.ac.nz/fullchain.pem', 'utf8');
+// // If you have a CA Bundle, uncomment the following line and update the path
+// // const ca = fs.readFileSync('path/to/ca_bundle.crt', 'utf8');
 
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  // Uncomment the following line if you have a CA Bundle
-  // ca: ca,
-};
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   // Uncomment the following line if you have a CA Bundle
+//   // ca: ca,
+// };
 
 // **** Variables **** //
 
 const app = express();
 
+const server = createHttpServer(app);
+
 //socket server
-const server = https.createServer(credentials, app); // Updated to use HTTPS
+// const server = https.createServer(credentials, app); // Updated to use HTTPS
 // const server = http.createServer(app); old http for local
 
 const io = new Server(server, {
