@@ -10,8 +10,9 @@ export const setupDrawingSocket = (io: Server) => {
     console.log(`User connected: ${socket.id}`);
 
     // Listen for "start game" event
-    socket.on("start", () => {
-      console.log("Game started");
+    socket.on("start", (voteKey:number) => {
+      console.log("Game started with vote key:", voteKey);
+      io.emit("started", voteKey);
       io.emit("started");
 
       setTimeout(() => {
@@ -22,7 +23,7 @@ export const setupDrawingSocket = (io: Server) => {
           console.log("Display votes emitted");
           io.emit("heatmap", votes);
         }, 30 * 1000);
-      }, 60 * 1000);
+      }, 90 * 1000);
     });
 
     socket.on("slidebutton", () => {
