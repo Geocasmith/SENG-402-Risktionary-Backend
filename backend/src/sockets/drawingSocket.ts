@@ -13,7 +13,6 @@ export const setupDrawingSocket = (io: Server) => {
     socket.on("start", (voteKey:number) => {
       console.log("Game started with vote key:", voteKey);
       io.emit("started", voteKey);
-      io.emit("started");
 
       setTimeout(() => {
         console.log("Game ended");
