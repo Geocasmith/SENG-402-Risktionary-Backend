@@ -5,24 +5,46 @@ const votes: any[] = [];
 const playerList: { [socketId: string]: string } = {};
 const lobbyPlayerList: { [socketId: string]: string } = {};
 
+let gameEndTimeout: NodeJS.Timeout | null = null; // moved outside of the callback
+
 export const setupDrawingSocket = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log(`User connected: ${socket.id}`);
+
+    const startVoting = () => {
+      console.log("Game ended");
+      io.emit("vote");
+
+      setTimeout(() => {
+        console.log("Display votes emitted");
+        io.emit("heatmap", votes);
+      }, 30 * 1000);
+    };
 
     // Listen for "start game" event
     socket.on("start", (voteKey:number) => {
       console.log("Game started with vote key:", voteKey);
       io.emit("started", voteKey);
 
-      setTimeout(() => {
-        console.log("Game ended");
-        io.emit("vote");
+      // Clear any existing gameEndTimeout
+      if (gameEndTimeout) {
+        clearTimeout(gameEndTimeout);
+      }
 
-        setTimeout(() => {
-          console.log("Display votes emitted");
-          io.emit("heatmap", votes);
-        }, 30 * 1000);
-      }, 90 * 1000);
+      // Start the timer for the end of the game
+      gameEndTimeout = setTimeout(startVoting, 90 * 1000);
+    });
+
+    // Listen for "skip" event
+    socket.on("skip", () => {
+      console.log("Skip received");
+
+      // If the game is running, end it early
+      if (gameEndTimeout) {
+        console.log("Trying to clear timeout");
+        clearTimeout(gameEndTimeout);
+        startVoting();
+      }
     });
 
     socket.on("slidebutton", () => {
@@ -42,6 +64,10 @@ export const setupDrawingSocket = (io: Server) => {
     // drawing sockets
     socket.on("draw", (data: any) => {
       socket.broadcast.emit("draw", data);
+    });
+
+    socket.on("clear", () => {
+      socket.broadcast.emit("clear");
     });
 
     socket.on("clear", () => {
@@ -71,6 +97,9 @@ export const setupDrawingSocket = (io: Server) => {
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);
+      if (gameEndTimeout) {
+        clearTimeout(gameEndTimeout);
+      }
       // Remove the player from the playerList object
       delete playerList[socket.id];
       // Check if the player was in the lobby and remove them from the lobbyPlayerList object
@@ -96,5 +125,7 @@ export const setupDrawingSocket = (io: Server) => {
       // Emit the "updatePlayerList" event to update the lobby
       io.emit("updatePlayerList", Object.values(lobbyPlayerList));
     });
+
+  
   });
 };
