@@ -23,6 +23,12 @@ export function setupChatSocket(io: Server): void {
       console.log(`Message sent in room ${room}:`, message);
     });
 
+    // Correct Guess
+    socket.on("correctGuess", (message: ChatMessage, room: string) => {
+      chatNamespace.to(room).emit("receiveMessage", message);
+      console.log(`Correct guess message in room ${room}:`, message);
+    });
+
     // Disconnect
     socket.on("disconnect", () => {
       console.log("User disconnected from chat:", socket.id);

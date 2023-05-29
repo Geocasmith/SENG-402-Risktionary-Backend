@@ -46,6 +46,7 @@ export const setupDrawingSocket = (io: Server) => {
         startVoting();
       }
     });
+    
 
     socket.on("slidebutton", () => {
       io.emit("slides");
