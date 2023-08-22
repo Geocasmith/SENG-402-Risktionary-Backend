@@ -1,9 +1,12 @@
 import { Server, Socket } from "socket.io";
 import fs from "fs";
+import { logToFile } from "@src/util/logger";
 
 const votes: any[] = [];
 const playerList: { [socketId: string]: string } = {};
 const lobbyPlayerList: { [socketId: string]: string } = {};
+const volunteeredPlayers: string[] = [];
+
 
 let gameEndTimeout: NodeJS.Timeout | null = null; // moved outside of the callback
 
@@ -20,6 +23,36 @@ export const setupDrawingSocket = (io: Server) => {
         io.emit("heatmap", votes);
       }, 30 * 1000);
     };
+    // When a student volunteers to draw
+    io.emit("playerVolunteered", volunteeredPlayers);
+
+    socket.on("volunteer", (playerName: string,playerID:string) => {
+    
+      // Add the player to the volunteered list
+        volunteeredPlayers.push(playerName);
+      // Emit the updated list of volunteers
+      io.emit("playerVolunteered", volunteeredPlayers);
+      // Log
+      logToFile({tag: "Volunteer",timestamp: new Date(),username: playerName,studentId: playerID || "Unknown",description: ""});});
+    socket.on("devolunteer", (playerName: string,playerID:string) => {
+      // Remove the player from the volunteered list
+      const index = volunteeredPlayers.indexOf(playerName);
+      if (index > -1) {
+        volunteeredPlayers.splice(index, 1);
+      }
+        
+      // Emit the updated list of volunteers
+      io.emit("playerVolunteered", volunteeredPlayers);
+      // Log
+      logToFile({tag: "Devolunteer",timestamp: new Date(),username: playerName,studentId: playerID || "Unknown",description: ""});
+  });
+
+    // When a student is selected
+    socket.on("selectPlayer", (selectedPlayerName: string) => {
+      const studentId = Object.keys(playerList).find(key => playerList[key] === selectedPlayerName); 
+      io.emit("playerSelected", selectedPlayerName);
+      logToFile({tag: "Selected",timestamp: new Date(),username: selectedPlayerName,studentId: studentId || "Unknown",description: "Student selected to draw"
+    });    });
 
     // Listen for "start game" event
     socket.on("start", (voteKey:number) => {
@@ -77,7 +110,14 @@ export const setupDrawingSocket = (io: Server) => {
 
     socket.on("signup", (signUpData: { studentId: string; displayName: string }) => {
       console.log("User signed up:", signUpData);
-      // Append the signup data to players.txt
+// Log to events.log
+logToFile({
+  tag: "Join",
+  timestamp: new Date(),
+  username: signUpData.displayName,
+  studentId: signUpData.studentId,
+  description: "User joined the game"
+});      // Append the signup data to players.txt
       fs.appendFile(
         "players.txt",
         `${signUpData.studentId}:${signUpData.displayName}\n`,
