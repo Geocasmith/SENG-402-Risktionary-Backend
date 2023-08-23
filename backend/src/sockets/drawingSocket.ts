@@ -23,7 +23,7 @@ export const setupDrawingSocket = (io: Server) => {
         console.log("Display votes emitted");
         io.emit("heatmap", votes);
         logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Heatmap"});
-      }, 10 * 1000);
+      }, 30 * 1000);
     };
     // When a student volunteers to draw
     io.emit("playerVolunteered", volunteeredPlayers);
