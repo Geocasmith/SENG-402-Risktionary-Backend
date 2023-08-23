@@ -46,3 +46,8 @@
 99:Fi
 43:Ho
 90:Fi
+999:C
+3:Fire
+9:Mac
+33:Firemo
+44:Ipad

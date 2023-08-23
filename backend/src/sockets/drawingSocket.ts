@@ -17,11 +17,13 @@ export const setupDrawingSocket = (io: Server) => {
     const startVoting = () => {
       console.log("Game ended");
       io.emit("vote");
+      logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Voting"});
 
       setTimeout(() => {
         console.log("Display votes emitted");
         io.emit("heatmap", votes);
-      }, 30 * 1000);
+        logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Heatmap"});
+      }, 10 * 1000);
     };
     // When a student volunteers to draw
     io.emit("playerVolunteered", volunteeredPlayers);
@@ -58,7 +60,7 @@ export const setupDrawingSocket = (io: Server) => {
     socket.on("start", (voteKey:number) => {
       console.log("Game started with vote key:", voteKey);
       io.emit("started", voteKey);
-
+      logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Drawing with vote key: " + voteKey});
       // Clear any existing gameEndTimeout
       if (gameEndTimeout) {
         clearTimeout(gameEndTimeout);
@@ -83,9 +85,11 @@ export const setupDrawingSocket = (io: Server) => {
 
     socket.on("slidebutton", () => {
       io.emit("slides");
+      logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Slides"});
     });
     socket.on("restartbutton", () => {
       io.emit("restart");
+      logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Restart"});
       votes.length = 0;
     });
 
@@ -93,6 +97,7 @@ export const setupDrawingSocket = (io: Server) => {
     socket.on("submit", (voteData: any) => {
       console.log("Vote submitted", voteData);
       votes.push(voteData);
+      logToFile({tag: "Vote",timestamp: new Date(),username: voteData.displayName,studentId: voteData.studentId,description: `Voted with Risk: ${voteData.risk}, Probability: ${voteData.probability}, Drawing: ${voteData.drawing}`});
     });
 
     // drawing sockets
@@ -110,14 +115,8 @@ export const setupDrawingSocket = (io: Server) => {
 
     socket.on("signup", (signUpData: { studentId: string; displayName: string }) => {
       console.log("User signed up:", signUpData);
-// Log to events.log
-logToFile({
-  tag: "Join",
-  timestamp: new Date(),
-  username: signUpData.displayName,
-  studentId: signUpData.studentId,
-  description: "User joined the game"
-});      // Append the signup data to players.txt
+      logToFile({tag: "Join",timestamp: new Date(),username: signUpData.displayName,studentId: signUpData.studentId,description: "User joined the game"});
+      //Add to player list file
       fs.appendFile(
         "players.txt",
         `${signUpData.studentId}:${signUpData.displayName}\n`,
