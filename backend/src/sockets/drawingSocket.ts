@@ -7,12 +7,15 @@ const playerList: { [socketId: string]: string } = {};
 const lobbyPlayerList: { [socketId: string]: string } = {};
 const volunteeredPlayers: string[] = [];
 
-
-let gameEndTimeout: NodeJS.Timeout | null = null; // moved outside of the callback
+let gameEndTimeout: NodeJS.Timeout | null = null; 
+let currentVoteKey = 0; // Store the voteKey on the server
 
 export const setupDrawingSocket = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log(`User connected: ${socket.id}`);
+
+    // When a user connects, emit the current voteKey to them
+    socket.emit("updateVoteKey", currentVoteKey);
 
     const startVoting = () => {
       console.log("Game ended");
@@ -23,7 +26,7 @@ export const setupDrawingSocket = (io: Server) => {
         console.log("Display votes emitted");
         io.emit("heatmap", votes);
         logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Heatmap"});
-      }, 10 * 1000);
+      }, 30 * 1000);
     };
     // When a student volunteers to draw
     io.emit("playerVolunteered", volunteeredPlayers);
@@ -57,10 +60,12 @@ export const setupDrawingSocket = (io: Server) => {
     });    });
 
     // Listen for "start game" event
-    socket.on("start", (voteKey:number) => {
+    socket.on("start", (voteKey: number) => {
       console.log("Game started with vote key:", voteKey);
+      currentVoteKey = voteKey;  
       io.emit("started", voteKey);
       logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Drawing with vote key: " + voteKey});
+      
       // Clear any existing gameEndTimeout
       if (gameEndTimeout) {
         clearTimeout(gameEndTimeout);

@@ -53,3 +53,9 @@
 44:Ipad
 44:H
 334:Fire
+34:H
+33:Ge
+3:Fire
+33:H
+9:hh
+9:h
