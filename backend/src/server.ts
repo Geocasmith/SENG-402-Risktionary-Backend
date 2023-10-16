@@ -3,7 +3,7 @@
  */
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import { setupDrawingSocket } from './sockets/drawingSocket';
+import { setupDrawingSocket } from './sockets/socket';
 import { setupChatSocket } from "./sockets/chatSocket";
 
 import cookieParser from 'cookie-parser';

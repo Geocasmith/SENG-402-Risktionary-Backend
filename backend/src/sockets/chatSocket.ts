@@ -16,11 +16,11 @@ export function setupChatSocket(io: Server): void {
     console.log("User connected to chat:", socket.id);
 
     // Join chat room
-    socket.on("joinRoom", (room: string) => {
+    socket.on("joinRoom", (room: string, callback: (response: string) => void) => {
       socket.join(room);
       console.log(`User ${socket.id} joined room ${room}`);
+      callback("Joined"); // acknowledge the join
     });
-
     // Receive chat message
     socket.on("sendMessage", (message: ChatMessage, room: string) => {
       chatNamespace.to(room).emit("receiveMessage", message);

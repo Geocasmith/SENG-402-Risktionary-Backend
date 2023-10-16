@@ -14,3 +14,8 @@ export const logToFile = (logData: LogData): void => {
         if (err) console.error('Error writing to log:', err);
     });
 }
+
+// Exporting the logEvent function
+export const logEvent = (tag: string, username: string, studentId: string, description: string = "") => {
+    logToFile({ tag, timestamp: new Date(), username, studentId, description });
+};

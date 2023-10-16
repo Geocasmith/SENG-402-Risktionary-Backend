@@ -14,7 +14,7 @@ export const setupDrawingSocket = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    // When a user connects, emit the current voteKey to them
+    // When a user connects, emit the current voteKey to them. This is to ensure all users are on the same word on a late join
     socket.emit("updateVoteKey", currentVoteKey);
 
     const startVoting = () => {
@@ -26,7 +26,7 @@ export const setupDrawingSocket = (io: Server) => {
         console.log("Display votes emitted");
         io.emit("heatmap", votes);
         logToFile({tag: "Gamestate",timestamp: new Date(),username: "",studentId: "",description: "Changed to Heatmap"});
-      }, 30 * 1000);
+      }, 7 * 1000);
     };
     // When a student volunteers to draw
     io.emit("playerVolunteered", volunteeredPlayers);
