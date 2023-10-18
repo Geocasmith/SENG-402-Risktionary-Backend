@@ -1,9 +1,9 @@
 ## Backend for SENG402
 
-##Name
+## Name
 Risktionary Backend
 
-##Description
+## Description
 This repository serves as the backend for the Risktionary game. It handles the sockets, the logger and the storing of player votes and names.
 
 The backend works with the frontend application.
@@ -12,7 +12,7 @@ The backend works with the frontend application.
 Node.js
 npm
 
-##Installation:
+## Installation:
 Clone the repository:
 ```
 git clone https://eng-git.canterbury.ac.nz/gca73/402-backend.git
