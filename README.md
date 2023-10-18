@@ -44,11 +44,14 @@ To run the unit tests:
 npm test
 ```
 
-Configuration:
+## Configuration:
 
 VM Development Environment: Runs the sockets securely over port 3001. Start with npm start
 
 Local Machine Testing Environment: Runs the sockets over localhost. Start with npm run dev
+
+## Project Structure
+Please refer to the wiki article on the [project structure](https://eng-git.canterbury.ac.nz/gca73/seng402/-/wikis/Backend-Structure).
 
 ## Technology Stack:
 Node.js
