@@ -12,7 +12,4 @@ if (process.env.NODE_ENV === 'production') {
 const SERVER_START_MSG = ('Express server started on port: ' + 
   EnvVars.Port.toString());
   
-// const { pool: dbPool, testConnection,createUsersTable } = require('./dbConnection');
-
-// server.listen(EnvVars.Port, () => logger.info(SERVER_START_MSG));
 httpServer.listen(EnvVars.Port, () => logger.info(SERVER_START_MSG));
